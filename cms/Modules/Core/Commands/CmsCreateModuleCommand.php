@@ -41,6 +41,7 @@ class CmsCreateModuleCommand extends Command
             $module = ucfirst($this->argument('module'));
             $moduleDir = 'cms/Modules/' . $module;
             $moduleProviderFile = $moduleDir . '/' . $module . 'ServiceProvider.php';
+            $modulePHPUnitFile = $moduleDir . '/' . 'phpunit.xml';
             $serviceDir = $moduleDir . '/Services';
             $serviceContractDir = $serviceDir . '/Contracts';
             $repositoryDir = $moduleDir . '/Repositories';
@@ -48,31 +49,26 @@ class CmsCreateModuleCommand extends Command
             $controllerDir = $moduleDir . '/Controllers';
             $middlewareDir = $moduleDir . '/Middlewares';
             $requestDir = $moduleDir . '/Requests';
+            $testDir = $moduleDir . '/Tests';
+            $unitTestDir = $testDir . '/Unit';
+            $featureTestDir = $testDir . '/Feature';
+            $moduleTestCaseFile = $testDir . '/' . $module . 'TestCase.php';
             $makingFolders = array();
+            $folders = [
+                $moduleDir,
+                $serviceContractDir,
+                $repositoryContractDir,
+                $controllerDir,
+                $middlewareDir,
+                $requestDir,
+                $testDir,
+                $unitTestDir,
+                $featureTestDir,
+            ];
 
-            if (!is_dir($moduleDir))
-                $makingFolders[] = $moduleDir;
-
-            if (!is_dir($serviceDir))
-                $makingFolders[] = $serviceDir;
-
-            if (!is_dir($serviceContractDir))
-                $makingFolders[] = $serviceContractDir;
-
-            if (!is_dir($repositoryDir))
-                $makingFolders[] = $repositoryDir;
-
-            if (!is_dir($repositoryContractDir))
-                $makingFolders[] = $repositoryContractDir;
-
-            if (!is_dir($controllerDir))
-                $makingFolders[] = $controllerDir;
-
-            if (!is_dir($middlewareDir))
-                $makingFolders[] = $middlewareDir;
-
-            if (!is_dir($requestDir))
-                $makingFolders[] = $requestDir;
+            foreach ($folders as $folder) {
+                if (!is_dir($folder)) $makingFolders[] = $folder;
+            }
 
             if (count($makingFolders) > 0) {
                 $this->makeMultiFolder($makingFolders);
@@ -85,6 +81,13 @@ class CmsCreateModuleCommand extends Command
                 $serviceProviderFile = fopen($moduleProviderFile, "w") or die("Unable to open file!");
                 fwrite($serviceProviderFile, $this->templateServiceProvider($module));
                 fclose($serviceProviderFile);
+            }
+
+            // Create php unit if not exists
+            if (!file_exists($modulePHPUnitFile)) {
+                $phpUnitFile = fopen($modulePHPUnitFile, "w") or die("Unable to open file!");
+                fwrite($phpUnitFile, $this->templatePHPUnit());
+                fclose($phpUnitFile);
             }
 
             // Create model if not exists
@@ -190,6 +193,14 @@ class CmsCreateModuleCommand extends Command
                 }
             }
 
+            // Create test case if not exist
+            if (!file_exists($moduleTestCaseFile)) {
+                $testCaseFile = fopen($moduleTestCaseFile, "w") or die("Unable to open file!");
+                fwrite($testCaseFile, $this->templateTestCase($module));
+                fclose($testCaseFile);
+            }
+
+            // Create repository folders and files
             if ($this->option('repository')) {
                 $repository = ucfirst($this->option('repository'));
                 $fileRepositoryContractName = $repositoryContractDir . '/' . $module . $repository . 'RepositoryContract.php';
@@ -262,7 +273,9 @@ class ' . $module . 'ServiceProvider extends CmsServiceProvider
 	{
 	    // Register services and repositories here...
 	}
-}';
+}
+
+';
     }
 
     public function templateServiceContract($service, $module): string
@@ -288,7 +301,9 @@ namespace Cms\Modules\Core\Services\Contracts;
 interface Core' . $module . 'ServiceContract
 {
 
-}';
+}
+
+';
     }
 
     public function templateService($service, $module): string
@@ -312,6 +327,7 @@ class ' . $module . $service . 'Service extends Core' . $service . 'Service impl
 	    $this->repository = $repository;
 	}
 }
+
 ';
     }
 
@@ -333,6 +349,7 @@ class Core' . $service . 'Service implements Core' . $service . 'ServiceContract
 	    $this->repository = $repository;
 	}
 }
+
 ';
     }
 
@@ -361,7 +378,9 @@ namespace Cms\Modules\Core\Repositories\Contracts;
 interface Core' . $repository . 'RepositoryContract
 {
 
-}';
+}
+
+';
     }
 
     public function templateRepository($repository, $module): string
@@ -377,6 +396,7 @@ class ' . $module . $repository . 'Repository extends Core' . $repository . 'Rep
 {
 
 }
+
 ';
     }
 
@@ -397,6 +417,7 @@ class Core' . $repository . 'Repository implements Core' . $repository . 'Reposi
         $this->model = $model;
     }
 }
+
 ';
     }
 
@@ -417,6 +438,7 @@ class ' . $controller . 'Controller extends Controller
         // register services here...
     }
 }
+
 ';
     }
 
@@ -506,6 +528,78 @@ class ' . $request . 'Request extends FormRequest
         return [];
     }
 }
+
+';
+    }
+
+    public function templateTestCase($module): string
+    {
+
+        return '<?php
+
+namespace Cms\Modules\\'. $module .'\Tests;
+
+use Cms\Modules\\' . $module . '\\' . $module . 'ServiceProvider;
+use Cms\Modules\Core\Tests\CoreTestCase;
+
+abstract class ' . $module . 'TestCase extends CoreTestCase
+{
+
+    public function setUp(): void
+    {
+        parent::setUp(); // TODO: Change the autogenerated stub
+    }
+
+    protected function getPackageProviders($app): array
+    {
+        return [
+            ' . $module . 'ServiceProvider::class,
+        ];
+    }
+
+    protected function getEnvironmentSetUp($app)
+    {
+        // perform environment setup
+    }
+}
+
+';
+    }
+
+    public function templatePHPUnit(): string
+    {
+
+        return '<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="../../../vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+>
+    <testsuites>
+        <testsuite name="Unit">
+            <directory suffix="Test.php">./Tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory suffix="Test.php">./Tests/Feature</directory>
+        </testsuite>
+    </testsuites>
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">./</directory>
+        </include>
+    </coverage>
+    <php>
+        <server name="APP_ENV" value="testing"/>
+        <server name="BCRYPT_ROUNDS" value="4"/>
+        <server name="CACHE_DRIVER" value="array"/>
+        <!-- <server name="DB_CONNECTION" value="sqlite"/> -->
+        <!-- <server name="DB_DATABASE" value=":memory:"/> -->
+        <server name="MAIL_MAILER" value="array"/>
+        <server name="QUEUE_CONNECTION" value="sync"/>
+        <server name="SESSION_DRIVER" value="array"/>
+        <server name="TELESCOPE_ENABLED" value="false"/>
+    </php>
+</phpunit>
 
 ';
     }
