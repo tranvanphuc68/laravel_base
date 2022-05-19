@@ -1,52 +1,48 @@
 ## Ticket
-* Gitlab descriptions template có chức năng mô tả chi tiết về merge request (MR), kèm theo các chú thích, checklist,.. của owner, các công việc dành cho reviewer.
-* Đảm bảo mọi thành viên trong team có thể hiểu được vấn đề và hướng giải quyết của owner, đồng thời hạn chế tối đa lỗi phát sinh.
+* Mẫu mô tả chi tiết dùng khi tạo merge request (MR) trong phần descriptions của Gitlab
+* Đảm bảo các thành viên trong team hiểu được vấn đề và hướng giải quyết của owner
+* Giúp việc review code dễ dàng, và hạn chế tối đa các lỗi phát sinh
 
-## Issues URL
+## 1. Điền redmine issues URL
 - [redmine_issue_id: redmine_issue_title](issue_url)
-  
-## Priority
-- [ ] LOW
-- [x] NORMAL
-- [ ] HIGH
-- [ ] URGENT
-- [ ] IMMEDIATE
 
-## What's this MR do?
-* Một vài dòng mô tả cụ thể về mục tiêu của MR này (cập nhật chức năng nào hay giải quyết vấn đề gì,..).
+## 2. MR này làm gì?
+* Mô tả mục tiêu của MR này (cập nhật chức năng, giải quyết vấn đề gì,..).
+- 
 
-## How to resolve this issues
-* Một vài dòng mô tả về giải pháp cho issue này (giải quyết như thế nào, sử dụng packages nào,..).
+## Làm gì để giải quyết vấn đề này?
+* Mô tả giải pháp (giải quyết như thế nào, sử dụng packages nào,..).
+- 
 
-## Checklist for owner of MR
-- [ ] Tóm tắt chức năng đã xây dựng.
-- [ ] Check giao diện đã đúng với XD mới nhất hay chưa: nội dung placeholder, title,...
-- [ ] Selftest luồng cơ bản của chức năng, gắn video trong mô tả của MR.
-- [ ] Noted lại các test case đã xây dựng.
-- [ ] Xử lý feedback từ tester.
+## Có migrations không?
+- [ ] Có
+- [x] Không
 
-## Checklist for Reviewer of MR
+## Có cần chạy commands không?
+- [ ] Có
+- [x] Không
 
-- [ ] Fetch MR về local và chạy chức năng ở local mà owner MR đã noted.
-- [ ] Check đầy đủ các logic có trong MR đã đầy đủ unittest với các case cơ bản.
-- [ ] Các yêu cầu thêm từ MR's owner.
+## Có thêm packages không?
+- [ ] Có
+- [x] Không
 
-## Migrations
-- [ ] YES
-- [x] NO
+## Có link screenshots không?
+- 
 
-## Run extra commands
-- [ ] YES
-- [x] NO
+## Checklist người tạo MR
+- [ ] Đã tóm tắt cụ thể chức năng
+- [ ] Đã check giao diện, đúng với XD (placeholder, title, padding, margin)
+- [ ] Đã tạo self-test, tự check luồng cơ bản, có link screenshots　dưới mô tả
+- [ ] Đã noted lại các test case đã test phía dưới
+- [ ] Đã xử lý feedback từ tester
 
-## Added Packages
-- [ ] YES
-- [x] NO
+## Checklist cho người Reviewer
 
-## Screenshots
+- [ ] Đã fetch MR về local và chạy thử chức năng
+- [ ] Đã check đầy đủ các logic, chạy unittest, và test các case cơ bản.
 
-## Note
+## Mô tả bổ sung
 * Những vấn đề cần lưu ý.
-
+- 
 
 ## Happy coding !!!
