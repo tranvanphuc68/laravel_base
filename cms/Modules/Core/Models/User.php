@@ -2,6 +2,7 @@
 
 namespace Cms\Modules\Core\Models;
 
+use App\Models\User as ModelsUser;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -41,4 +42,11 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $guard_name = 'web';
+
+    public function todolist()
+    {
+        return $this->hasMany(TodoList::class);
+    }
 }
